@@ -1,9 +1,11 @@
 'use client';
 
-import { ElementItem, CareTeamMember, LabResultData, LabTrendData } from '../../../types/chat';
+import { ElementItem, CareTeamMember, LabResultData, LabTrendData, Doctor, PreBookingRequirement } from '../../../types/chat';
 import { CareTeamDirectory } from './CareTeamDirectory';
 import { LabResultView } from './LabResultView';
 import { LabTrendViewer } from './LabTrendViewer';
+import { DoctorsDirectory } from './DoctorsDirectory';
+import { PreBookingRequirements } from './PreBookingRequirements';
 
 interface ElementRendererProps {
   elements: ElementItem[];
@@ -63,6 +65,36 @@ export function ElementRenderer({ elements, onSendMessage }: ElementRendererProp
           analysis: (getValueFromPath(data, analysisPath) as string) || '',
         };
         return <LabTrendViewer data={labTrendData} />;
+      }
+
+      case 'DoctorsDirectory': {
+        const doctors = (data.doctors as Doctor[]) || [];
+        return <DoctorsDirectory doctors={doctors} onSendMessage={onSendMessage} />;
+      }
+
+      case 'root': {
+        // Handle nested component configs like PreBookingRequirements
+        const componentConfig = componentDef.component;
+
+        if ('PreBookingRequirements' in componentConfig) {
+          const config = componentConfig.PreBookingRequirements as Record<string, { literalString?: string; path?: string }>;
+          const requirementsPath = config.requirements?.path || 'bookingContext/prerequisites';
+          const acknowledgmentText = config.acknowledgmentText?.literalString || 'I agree to the terms.';
+          const requirements = (getValueFromPath(data, requirementsPath) as PreBookingRequirement[]) || [];
+          return (
+            <PreBookingRequirements
+              requirements={requirements}
+              acknowledgmentText={acknowledgmentText}
+              onSendMessage={onSendMessage}
+            />
+          );
+        }
+
+        return (
+          <div className="bg-muted rounded-lg p-3 text-sm text-muted-foreground">
+            Unknown root component configuration
+          </div>
+        );
       }
 
       default:

@@ -31,8 +31,32 @@ export interface LabTrendData {
   analysis: string;
 }
 
+export interface TimeSlot {
+  time: string;
+  available: boolean;
+}
+
+export interface DayAvailability {
+  date: string;
+  dayName: string;
+  slots: TimeSlot[];
+}
+
+export interface Doctor {
+  name: string;
+  role: string;
+  roleColor: string;
+  specialty: string;
+  availability?: DayAvailability[];
+}
+
+export interface PreBookingRequirement {
+  checked: boolean;
+  label: string;
+}
+
 export interface ElementComponent {
-  id: 'CareTeamDirectory' | 'LabResultView' | 'LabTrendViewer';
+  id: 'CareTeamDirectory' | 'LabResultView' | 'LabTrendViewer' | 'DoctorsDirectory' | 'root';
   component: Record<string, unknown>;
 }
 
