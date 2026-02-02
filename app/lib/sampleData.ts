@@ -5,7 +5,7 @@ export const SAMPLE_PROMPTS = {
 };
 
 export const SAMPLE_LAB = {
-  testName: "Hemoglobin A1C",
+  testName: "Total Cholesterol",
   value: 5.7,
   unit: "%",
   referenceRange: "4.0 - 5.6%",
